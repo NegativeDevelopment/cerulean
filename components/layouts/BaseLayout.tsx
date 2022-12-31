@@ -9,13 +9,18 @@ interface BaseLayoutProps {
 
 export default function BaseLayout({ children }: BaseLayoutProps) {
   return (
-    <>
+    <div class="min-h-screen flex flex-col">
       <Head>
         <title>Celurean - Money group manager</title>
+        <link
+          href="https://cdn.jsdelivr.net/npm/daisyui@2.46.0/dist/full.css"
+          rel="stylesheet"
+          type="text/css"
+        />
       </Head>
       <Header />
       {children}
       <Footer />
-    </>
+    </div>
   );
 }

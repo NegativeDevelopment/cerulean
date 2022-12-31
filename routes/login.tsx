@@ -1,22 +1,18 @@
 import { JSX } from "preact";
-import { Button } from "../components/Button.tsx";
-import {Input} from "../components/Input.tsx";
+import Input from "../components/common/Input.tsx";
+import BaseLayout from "../components/layouts/BaseLayout.tsx";
 
 export default function Login() {
   return (
-    <div class="mx-auto">
-      <h1 class="font-bold text-2xl">Login</h1>
-      <form method="POST">
-        <label for="username">Username:</label>
-        <br />
-        <Input type="text" id="username" name="username" />
-        <br />
-        <label for="password">Password:</label>
-        <br />
-        <Input type="text" id="password" name="password" />
-        <br />
-        <Input type="submit" value="Submit" />
-      </form>
-    </ div>
+    <BaseLayout>
+      <div class="mx-auto my-16">
+        <h1 class="font-bold text-4xl">Login</h1>
+        <form method="POST" class="flex flex-col gap-5 mt-8">
+          <Input type="text" title="Username" id="username" name="username" />
+          <Input type="text" title="Password" id="password" name="password" />
+          <Input type="submit" value="Submit" class="btn btn-primary" />
+        </form>
+      </div>
+    </BaseLayout>
   );
 }

@@ -1,6 +1,6 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
+import ProfilePicture from "../../components/profile/ProfilePicture.tsx";
 import { Group } from "../../types/group.ts";
-import ProfilePicture from "../../components/ProfilePicture.tsx";
 
 export default function GroupPage(props: PageProps<Group[]>) {
   console.log(props.data);
