@@ -9,6 +9,7 @@
     "freshwind": "https://deno.land/x/freshwind@4.0.0/main.ts",
     "freshwind/": "https://deno.land/x/freshwind@4.0.0/",
     "@twind/core": "https://esm.sh/v99/@twind/core@1.0.3",
-    "@twind/preset-tailwind": "https://esm.sh/v99/@twind/preset-tailwind@1.0.1"
+    "@twind/preset-tailwind": "https://esm.sh/v99/@twind/preset-tailwind@1.0.1",
+    "redis": "https://deno.land/x/redis@v0.28.0/mod.ts"
   }
 }
