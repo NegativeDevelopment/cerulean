@@ -1,5 +1,6 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
 import { GroupList } from "../../components/group/GroupList.tsx";
+import { Group } from "../../types/group.ts";
 
 const NAMES = ["Alice", "Bob", "Charlie", "Dave", "Eve", "Frank"];
 const DEMO_GROUPS = [
@@ -12,31 +13,30 @@ const DEMO_GROUPS = [
 ]
 
 interface Data {
-  results: string[];
-  query: string;
+  groups: Group[];
 }
 
 export const handler: Handlers<Data> = {
-  GET(req, ctx) {
+  async GET(req, ctx) {
     const url = new URL(req.url);
-    const query = url.searchParams.get("q") || "";
-    const results = NAMES.filter((name) => name.includes(query));
-    return ctx.render({ results, query });
+    const response = await fetch(`${url.origin}/api/users/1/groups/1`);
+    const group: Group =  await response.json().catch(console.error)
+    const groups = [group]
+    if(!groups)
+      return new Response("Groups not found", {status: 404})
+
+    return ctx.render({ groups });
   },
 };
 
+
+
 export default function Groups({ data }: PageProps<Data>) {
-  const { results, query } = data;
+  const { groups } = data;
+
   return (
     <div>
-      {/* <form>
-        <input type="text" name="q" value={query} />
-        <button type="submit">Search</button>
-      </form>
-      <ul>
-        {results.map((name) => <li key={name}>{name}</li>)}
-      </ul> */}
-      <GroupList groups={[{name: "Example Group"},{name: "Example Group2"}]}/>
+      <GroupList groups={groups}/>
     </div>
   );
 }

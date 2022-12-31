@@ -1,6 +1,12 @@
+import { Handlers, PageProps } from "$fresh/server.ts";
+import { Group } from '../../types/group.ts'
 import ProfilePicture from "../../components/ProfilePicture.tsx"
+import Header from "../../islands/Header.tsx"
 
-export default function Group() {
+
+export default function GroupPage(props: PageProps<Group[]>) {
+  console.log(props.data)
+
   const group = {
     name: "Example group"
   }
@@ -16,6 +22,8 @@ export default function Group() {
 
 
   return (
+    <>
+    <Header />
     <div class="sm:w-[640px] mx-8 my-3 sm:mx-auto">
       <div class="mb-4 tracking-wider uppercase font-light flex justify-between">
         <h1 class="text-xl text-gray-700">{group.name}</h1>
@@ -27,7 +35,7 @@ export default function Group() {
       </div>
       <h2 class="my-8 tracking-wider uppercase font-light flex justify-between">Pending</h2>
       <ul>
-        <li class="flex w-full gap-6"> 
+        <li class="flex w-full gap-6">
           <ProfilePicture />
           <div class="">
             <div class="text-gray-600 ">{transaction.user.name}</div>
@@ -40,7 +48,7 @@ export default function Group() {
 
       <h2 class="my-8 tracking-wider uppercase font-light flex justify-between">Transactions</h2>
       <ul>
-        <li class="flex w-full gap-6"> 
+        <li class="flex w-full gap-6">
           <ProfilePicture />
           <div class="">
             <div class="text-gray-600 ">{transaction.user.name}</div>
@@ -55,6 +63,6 @@ export default function Group() {
         </li>
       </ul>
 
-    </div>
+    </div></>
   )
 }
