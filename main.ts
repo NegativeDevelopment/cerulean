@@ -9,7 +9,9 @@ import "https://deno.land/x/dotenv@v3.2.0/load.ts";
 import { start } from "$fresh/server.ts";
 import manifest from "./fresh.gen.ts";
 
-import twindPlugin from "$fresh/plugins/twind.ts";
-import twindConfig from "./twind.config.ts";
+import freshwind from "freshwind/plugin.ts";
+import config, { configURL } from "./twind.config.ts";
 
-await start(manifest, { plugins: [twindPlugin(twindConfig)] });
+await start(manifest, {
+  plugins: [freshwind(config, configURL)],
+});
