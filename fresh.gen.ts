@@ -6,12 +6,13 @@ import config from "./deno.json" assert { type: "json" };
 import * as $0 from "./routes/api/joke.ts";
 import * as $1 from "./routes/api/users/[id].ts";
 import * as $2 from "./routes/api/users/[user]/groups/[group]/members/[id].ts";
-import * as $3 from "./routes/api/users/[user]/groups/[id].ts";
-import * as $4 from "./routes/groups/[group].tsx";
-import * as $5 from "./routes/index.tsx";
-import * as $6 from "./routes/login.tsx";
-import * as $7 from "./routes/me/groups.tsx";
-import * as $8 from "./routes/test.tsx";
+import * as $3 from "./routes/api/users/[user]/groups/[group]/transactions/index.ts";
+import * as $4 from "./routes/api/users/[user]/groups/[id].ts";
+import * as $5 from "./routes/groups/[group].tsx";
+import * as $6 from "./routes/index.tsx";
+import * as $7 from "./routes/login.tsx";
+import * as $8 from "./routes/me/groups.tsx";
+import * as $9 from "./routes/test.tsx";
 import * as $$0 from "./islands/Counter.tsx";
 
 const manifest = {
@@ -19,12 +20,13 @@ const manifest = {
     "./routes/api/joke.ts": $0,
     "./routes/api/users/[id].ts": $1,
     "./routes/api/users/[user]/groups/[group]/members/[id].ts": $2,
-    "./routes/api/users/[user]/groups/[id].ts": $3,
-    "./routes/groups/[group].tsx": $4,
-    "./routes/index.tsx": $5,
-    "./routes/login.tsx": $6,
-    "./routes/me/groups.tsx": $7,
-    "./routes/test.tsx": $8,
+    "./routes/api/users/[user]/groups/[group]/transactions/index.ts": $3,
+    "./routes/api/users/[user]/groups/[id].ts": $4,
+    "./routes/groups/[group].tsx": $5,
+    "./routes/index.tsx": $6,
+    "./routes/login.tsx": $7,
+    "./routes/me/groups.tsx": $8,
+    "./routes/test.tsx": $9,
   },
   islands: {
     "./islands/Counter.tsx": $$0,

@@ -1,6 +1,7 @@
 export interface Transaction {
   id: string;
+  groupId: string;
   sender: string;
   amount: number;
-  recievers: string[];
+  receivers: string[];
 }
