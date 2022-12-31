@@ -1,5 +1,5 @@
 import { PageProps } from "$fresh/server.ts";
-import { Group } from "../../../types/group.ts";
+import { Group } from "../../../../../types/group.ts";
 
 const groups: Group[] = [
   { id: "1", name: "Group 1" },
