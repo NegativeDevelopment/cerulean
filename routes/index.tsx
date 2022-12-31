@@ -5,9 +5,10 @@ import BaseLayout from "../components/layouts/BaseLayout.tsx";
 export default function Home() {
   return (
     <BaseLayout>
-      <div class="my-16 mx-12">
-        <h1 class="text-6xl mb-8">Celurean</h1>
-        <p>A new way to manage expanses together with Friends and Family</p>
+      <div class="mt-24 mx-16">
+        <h1 class="text-3xl max-w-xl">
+          A new way to manage expenses together with friends and family
+        </h1>
         <div>
           <RedirectButton href="/login" title="Login" className="mt-12 mr-6" />
           <span class="text-gray-600">
