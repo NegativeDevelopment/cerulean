@@ -1,4 +1,4 @@
-import { IconChevronRight } from "./icons/IconChevronRight.tsx"
+import { IconChevronRight } from "./../icons/IconChevronRight.tsx"
 
 interface GroupListEntryProps {
   group: {

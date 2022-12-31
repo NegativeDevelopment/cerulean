@@ -1,5 +1,5 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
-import { GroupList } from "../../components/GroupList.tsx";
+import { GroupList } from "../../components/group/GroupList.tsx";
 
 const NAMES = ["Alice", "Bob", "Charlie", "Dave", "Eve", "Frank"];
 const DEMO_GROUPS = [
