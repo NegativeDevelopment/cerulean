@@ -19,7 +19,9 @@ export default function BaseLayout({ children }: BaseLayoutProps) {
         />
       </Head>
       <Header />
-      {children}
+      <div class="mx-6">
+        {children}
+      </div>
       <Footer />
     </div>
   );
