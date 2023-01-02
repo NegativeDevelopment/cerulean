@@ -11,14 +11,21 @@
 		"vscode": {
 			// Set *default* container specific settings.json values on container create.
 			"settings": {
+				// Go tooling
 				"go.toolsManagement.checkForUpdates": "local",
 				"go.useLanguageServer": true,
 				"go.gopath": "/go",
-				"go.goroot": "/usr/local/go"
+				"go.goroot": "/usr/local/go",
+				// Conventional Commits
+				"conventionalCommits.scopes": [
+					"flutter-app",
+					"go-api"
+				]
 			},
 			// Add the IDs of extensions you want installed when the container is created.
 			"extensions": [
-				"golang.Go"
+				"golang.Go",
+				"vivaxy.vscode-conventional-commits"
 			]
 		}
 	},
