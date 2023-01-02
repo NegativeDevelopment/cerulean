@@ -12,16 +12,17 @@ RUN if [ "${NODE_VERSION}" != "none" ]; then su vscode -c "umask 0002 && . /usr/
 
 # [Optional] Uncomment the next lines to use go get to install anything else you need
 USER vscode
-RUN go get -x github.com/githubnemo/CompileDaemon
-RUN go get -x github.com/joho/godotenv
+RUN go install github.com/githubnemo/CompileDaemon@latest
 USER root
 
 # [Optional] Uncomment this line to install global node packages.
 # RUN su vscode -c "source /usr/local/share/nvm/nvm.sh && npm install -g <your-package-here>" 2>&1
 
 # Flutter Setup
+USER vscode
 ARG PATH="$PATH:~/flutter/bin"
 
 run wget https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.3.10-stable.tar.xz -O flutter.tar.xz \
   && tar -xf flutter.tar.xz -C ~ \
   && rm flutter.tar.xz 
+USER root
