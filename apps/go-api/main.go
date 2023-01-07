@@ -27,6 +27,7 @@ func main() {
 		})
 	}
 	controllers.UserRoutes(rootGroup)
+	controllers.AuthRoutes(rootGroup)
 
 	router.Run()
 }
