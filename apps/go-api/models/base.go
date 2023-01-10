@@ -3,19 +3,18 @@ package models
 import (
 	"time"
 
-	uuid "github.com/satori/go.uuid"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type Base struct {
-	ID        uuid.UUID  `gorm:"type:uuid;primary_key;" json:"id"`
+	ID        uuid.UUID  `json:"id" gorm:"primary_key;type:uuid;"`
 	CreatedAt time.Time  `json:"-"`
 	UpdatedAt time.Time  `json:"-"`
-	DeletedAt *time.Time `sql:"index" json:"-"`
+	DeletedAt *time.Time `json:"-" sql:"index"`
 }
 
 func (base *Base) BeforeCreate(tx *gorm.DB) (err error) {
-	base.ID = uuid.NewV4()
-
+	base.ID = uuid.New()
 	return
 }
