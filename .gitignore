@@ -1,1 +1,5 @@
+# Env Files
 apps/**/*.env
+
+# OS Specific files
+.DS_Store
