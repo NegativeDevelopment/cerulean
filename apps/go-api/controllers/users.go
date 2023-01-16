@@ -6,13 +6,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UserRoutes(parentGroup *gin.RouterGroup) {
+// --- Routes ---
+func UsersRoutes(parentGroup *gin.RouterGroup) {
 	group := parentGroup.Group("/users")
 	{
 		group.GET("/:userid", getUser)
 	}
 }
 
+// --- Handlers ---
 func getUser(c *gin.Context) {
 	userId := c.Param("userid")
 

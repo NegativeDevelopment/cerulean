@@ -12,15 +12,20 @@ func init() {
 	lib.InitializeDatabase()
 
 	lib.DB.AutoMigrate(&models.User{})
+	lib.DB.AutoMigrate(&models.Group{})
+	lib.DB.AutoMigrate(&models.Member{})
 }
 
 func main() {
 	router := gin.Default()
 
 	rootGroup := router.Group("/api")
-	controllers.UserRoutes(rootGroup)
+	controllers.UsersRoutes(rootGroup)
 	controllers.AuthRoutes(rootGroup)
-	controllers.MeRoutes(rootGroup)
+	controllers.GroupsRoutes(rootGroup)
+	controllers.MyRoutes(rootGroup)
+	controllers.MyGroupsRoutes(rootGroup)
+	controllers.MyGroupMembersRoutes(rootGroup)
 
 	router.Run()
 }

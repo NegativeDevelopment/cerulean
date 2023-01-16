@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/google/uuid"
 )
 
 func JwtAuthMiddleware() gin.HandlerFunc {
@@ -45,7 +46,14 @@ func JwtAuthMiddleware() gin.HandlerFunc {
 				c.AbortWithStatusJSON(401, gin.H{"message": "Invalid auth token"})
 				return
 			}
-			c.Set("user", claims["userId"])
+
+			userId, err := uuid.Parse(claims["userId"].(string))
+			if err != nil {
+				c.AbortWithStatusJSON(401, gin.H{"message": "Invalid auth token"})
+				return
+			}
+
+			c.Set("user", userId)
 		} else {
 			c.AbortWithStatusJSON(401, gin.H{"message": "Invalid auth token"})
 			return

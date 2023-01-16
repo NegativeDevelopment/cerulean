@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// --- Routes ---
 func AuthRoutes(parentGroup *gin.RouterGroup) {
 	group := parentGroup.Group("/auth")
 	{
@@ -14,6 +15,7 @@ func AuthRoutes(parentGroup *gin.RouterGroup) {
 	}
 }
 
+// --- Handlers ---
 type Login struct {
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
