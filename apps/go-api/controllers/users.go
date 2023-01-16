@@ -1,9 +1,12 @@
 package controllers
 
 import (
+	"net/http"
+
 	"github.com/NegativeDevelopment/cerulean/go-api/lib"
 	"github.com/NegativeDevelopment/cerulean/go-api/models"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 // --- Routes ---
@@ -20,9 +23,14 @@ func getUser(c *gin.Context) {
 
 	var user models.User
 	if err := lib.DB.Select("id", "username").Where("id = ?", userId).First(&user).Error; err != nil {
-		c.JSON(400, gin.H{"error": "User not found"})
-		return
+		if err == gorm.ErrRecordNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+			return
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get user"})
+			return
+		}
 	}
 
-	c.JSON(200, user)
+	c.JSON(http.StatusOK, user)
 }

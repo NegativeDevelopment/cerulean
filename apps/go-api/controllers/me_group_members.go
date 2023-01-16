@@ -1,6 +1,9 @@
 package controllers
 
 import (
+	"net/http"
+	"strings"
+
 	"github.com/NegativeDevelopment/cerulean/go-api/lib"
 	"github.com/NegativeDevelopment/cerulean/go-api/middlewares"
 	"github.com/NegativeDevelopment/cerulean/go-api/models"
@@ -26,7 +29,7 @@ func addGroupMember(c *gin.Context) {
 
 	var addGroupMemberInput AddGroupMemberInput
 	if err := c.ShouldBindJSON(&addGroupMemberInput); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -35,8 +38,13 @@ func addGroupMember(c *gin.Context) {
 		UserID:  addGroupMemberInput.UserId,
 	}
 	if err := lib.DB.Create(&groupMember).Error; err != nil {
-		c.JSON(400, gin.H{"error": "Internal server error while creating group member"})
-		return
+		if strings := strings.Contains(err.Error(), "duplicate key"); strings {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Group member already exists"})
+			return
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add group member"})
+			return
+		}
 	}
 
 	c.JSON(200, groupMember)

@@ -1,6 +1,9 @@
 package controllers
 
 import (
+	"net/http"
+	"strings"
+
 	"github.com/NegativeDevelopment/cerulean/go-api/lib"
 	"github.com/NegativeDevelopment/cerulean/go-api/models"
 	"github.com/gin-gonic/gin"
@@ -24,28 +27,28 @@ type Login struct {
 func login(c *gin.Context) {
 	var login Login
 	if err := c.ShouldBindJSON(&login); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	var user models.User
 	if err := lib.DB.Where("username = ?", login.Username).First(&user).Error; err != nil {
-		c.JSON(400, gin.H{"error": "Invalid username or password"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
 		return
 	}
 
 	if !user.CheckPassword(login.Password) {
-		c.JSON(400, gin.H{"error": "Invalid username or password"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
 		return
 	}
 
 	token, err := lib.GenerateToken(&user)
 	if err != nil {
-		c.JSON(500, gin.H{"error": "Failed to generate jwt token"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate jwt token"})
 		return
 	}
 
-	c.JSON(200, gin.H{"token": token})
+	c.JSON(http.StatusOK, gin.H{"token": token})
 }
 
 type Register struct {
@@ -56,25 +59,24 @@ type Register struct {
 func register(c *gin.Context) {
 	var register Register
 	if err := c.ShouldBindJSON(&register); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	var existingUser models.User
-	if err := lib.DB.Where("username = ?", register.Username).First(&existingUser).Error; err == nil {
-		c.JSON(400, gin.H{"error": "Username already taken"})
-		return
+	var user models.User
+	user.Username = register.Username
+	user.Password = register.Password
+	user.HashPassword()
+
+	if err := lib.DB.Create(&user).Error; err != nil {
+		if strings.Contains(err.Error(), "duplicate key") {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "User already exists"})
+			return
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
+			return
+		}
 	}
 
-	var newUser models.User
-	newUser.Username = register.Username
-	newUser.Password = register.Password
-	newUser.HashPassword()
-
-	if err := lib.DB.Create(&newUser).Error; err != nil {
-		c.JSON(500, gin.H{"error": "Failed to create user"})
-		return
-	}
-
-	c.JSON(200, gin.H{"message": "User created"})
+	c.JSON(http.StatusCreated, user)
 }

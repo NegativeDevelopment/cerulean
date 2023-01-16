@@ -1,11 +1,14 @@
 package controllers
 
 import (
+	"net/http"
+
 	"github.com/NegativeDevelopment/cerulean/go-api/lib"
 	"github.com/NegativeDevelopment/cerulean/go-api/middlewares"
 	"github.com/NegativeDevelopment/cerulean/go-api/models"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 func MyGroupsRoutes(parentGroup *gin.RouterGroup) {
@@ -21,11 +24,16 @@ func getMyGroup(c *gin.Context) {
 
 	var group models.Group
 	if err := lib.DB.Preload("Members").Where("id = ?", groupId).First(&group).Error; err != nil {
-		c.JSON(400, gin.H{"error": "Group not found"})
-		return
+		if err == gorm.ErrRecordNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Group not found"})
+			return
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get group"})
+			return
+		}
 	}
 
-	c.JSON(200, group)
+	c.JSON(http.StatusOK, group)
 }
 
 func getMyGroups(c *gin.Context) {
@@ -33,9 +41,9 @@ func getMyGroups(c *gin.Context) {
 
 	var groups []models.Group
 	if err := lib.DB.Preload("Members", "user_id = ?", userId).Find(&groups).Error; err != nil {
-		c.JSON(400, gin.H{"error": "Groups not found"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get groups"})
 		return
 	}
 
-	c.JSON(200, groups)
+	c.JSON(http.StatusOK, groups)
 }
