@@ -14,6 +14,8 @@ func init() {
 	lib.DB.AutoMigrate(&models.User{})
 	lib.DB.AutoMigrate(&models.Group{})
 	lib.DB.AutoMigrate(&models.Member{})
+	lib.DB.AutoMigrate(&models.Transaction{})
+	lib.DB.AutoMigrate(&models.TransactionMember{})
 }
 
 func main() {
@@ -23,9 +25,11 @@ func main() {
 	controllers.UsersRoutes(rootGroup)
 	controllers.AuthRoutes(rootGroup)
 	controllers.GroupsRoutes(rootGroup)
+
 	controllers.MyRoutes(rootGroup)
 	controllers.MyGroupsRoutes(rootGroup)
 	controllers.MyGroupMembersRoutes(rootGroup)
+	controllers.MyGroupTransactionsRoutes(rootGroup)
 
 	router.Run()
 }
