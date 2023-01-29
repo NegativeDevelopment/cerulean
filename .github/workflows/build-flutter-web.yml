@@ -1,9 +1,6 @@
 name: Build Flutter for Web
 
-on:
-  push:
-    paths:
-      - "apps/flutter-app"
+on: push
 
 jobs:
   build-web:
