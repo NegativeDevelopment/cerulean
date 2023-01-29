@@ -1,17 +1,19 @@
 name: Build Flutter for Web
 
 on:
-  push
-  # :
-  #   paths:
-  #     - "apps/flutter-app"
+  push:
+    paths:
+      - "apps/flutter-app"
+
 jobs:
   build-web:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
           channel: "stable"
       - name: Install dependencies
