@@ -81,13 +81,58 @@ func createTransaction(c *gin.Context) {
 		Members:         members,
 	}
 
+	// Start gorm transaction
+	tx := lib.DB.Begin()
+	// Create transaction
 	if err := lib.DB.Create(&transaction).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create transaction"})
+
+		tx.Rollback()
 		return
 	}
 
+	// Update debts
+	for i := range transaction.Members {
+		if transaction.Members[i].UserID != transaction.CreatedByUserID {
+			if err := lib.DB.Model(&models.Debt{}).Where("group_id = ? AND creditor_id = ? AND debtor_id = ?", groupId, transaction.CreatedByUserID, transaction.Members[i].UserID).UpdateColumn("amount", gorm.Expr("amount + ?", transaction.Amount/float64(len(transaction.Members)))).Error; err != nil {
+				if err == gorm.ErrRecordNotFound {
+					c.JSON(http.StatusNotFound, gin.H{"error": "Debt with member not found"})
+				} else {
+					c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update debt"})
+				}
+
+				tx.Rollback()
+				return
+			}
+		}
+
+		if err := lib.DB.Model(&models.Debt{}).Where("group_id = ? AND creditor_id = ? AND debtor_id = ?", groupId, transaction.Members[i].UserID, transaction.CreatedByUserID).UpdateColumn("amount", gorm.Expr("amount - ?", transaction.Amount/float64(len(transaction.Members)))).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				c.JSON(http.StatusNotFound, gin.H{"error": "Debt with member itself not found"})
+			} else {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update debt"})
+			}
+
+			tx.Rollback()
+			return
+		}
+	}
+
+	// Get transaction
 	if err := lib.DB.Preload(clause.Associations).First(&transaction, transaction.ID).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get transaction"})
+		if err == gorm.ErrRecordNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Transaction not found after creation"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get transaction"})
+		}
+
+		tx.Rollback()
+		return
+	}
+
+	// Commit transaction
+	if err := tx.Commit().Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to commit transaction"})
 		return
 	}
 

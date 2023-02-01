@@ -6,9 +6,11 @@ type User struct {
 	Base
 	Username          string              `json:"username" gorm:"type:varchar(100);unique_index"`
 	Password          string              `json:"-" gorm:"type:varchar(100)"`
-	Group             []Group             `json:"-" gorm:"foreignkey:OwnerID"`
+	Group             []Group             `json:"-" gorm:"foreignkey:OwnerID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Members           []Member            `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	TranactionMembers []TransactionMember `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	DebtsCreditor     []Debt              `json:"-" gorm:"foreignkey:CreditorID;references:ID; constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	DebtsDebtor       []Debt              `json:"-" gorm:"foreignkey:DebtorID;references:ID; constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 func (u *User) HashPassword() error {

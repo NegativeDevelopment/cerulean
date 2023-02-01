@@ -8,6 +8,7 @@ type Group struct {
 	OwnerID      uuid.UUID     `json:"owner_id"`
 	Members      []Member      `json:"members" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Transactions []Transaction `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Debts        []Debt        `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 func (group *Group) IsMember(userID uuid.UUID) bool {

@@ -37,6 +37,7 @@ func createGroup(c *gin.Context) {
 		Name:    createGroupInput.Name,
 		OwnerID: userId,
 		Members: []models.Member{{UserID: userId}},
+		Debts:   []models.Debt{{CreditorID: userId, DebtorID: userId}},
 	}
 
 	if err := lib.DB.Create(&group).Error; err != nil {

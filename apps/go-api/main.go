@@ -16,6 +16,7 @@ func init() {
 	lib.DB.AutoMigrate(&models.Member{})
 	lib.DB.AutoMigrate(&models.Transaction{})
 	lib.DB.AutoMigrate(&models.TransactionMember{})
+	lib.DB.AutoMigrate(&models.Debt{})
 }
 
 func main() {
@@ -30,6 +31,7 @@ func main() {
 	controllers.MyGroupsRoutes(rootGroup)
 	controllers.MyGroupMembersRoutes(rootGroup)
 	controllers.MyGroupTransactionsRoutes(rootGroup)
+	controllers.MyGroupDebtRoutes(rootGroup)
 
 	router.Run()
 }
