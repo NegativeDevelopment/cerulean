@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
     if (!tokenModel.isLoggedIn()) {
       return LoginPage();
     } else {
-      return HomePage();
+      return const HomePage();
     }
   }
 }
