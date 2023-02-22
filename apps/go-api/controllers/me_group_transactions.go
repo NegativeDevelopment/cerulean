@@ -19,6 +19,7 @@ func MyGroupTransactionsRoutes(r *gin.RouterGroup) {
 	{
 		group.GET("", getTransactions)
 		group.POST("", createTransaction)
+		group.DELETE("/:transactionid", middlewares.CheckUUIDMiddleware("transactionid"), deleteTransaction)
 	}
 }
 
@@ -137,4 +138,71 @@ func createTransaction(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, transaction)
+}
+
+func deleteTransaction(c *gin.Context) {
+	userId := c.MustGet("user").(uuid.UUID)
+	groupId := c.MustGet("groupid").(uuid.UUID)
+	transactionId := c.MustGet("transactionid").(uuid.UUID)
+
+	// Get transaction
+	var transaction models.Transaction
+	if err := lib.DB.Preload(clause.Associations).Where("group_id = ? AND created_by_user_id = ?", groupId, userId).First(&transaction).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Transaction not found"})
+			return
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get transactions"})
+			return
+		}
+	}
+
+	// Start gorm transaction
+	tx := lib.DB.Begin()
+	// Delete transaction
+	if err := lib.DB.Where("id = ? AND group_id = ? AND created_by_user_id = ?", transactionId, groupId, userId).Delete(&models.Transaction{}).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Transaction not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete transaction"})
+		}
+
+		tx.Rollback()
+		return
+	}
+
+	// Update debts
+	for i := range transaction.Members {
+		if transaction.Members[i].UserID != transaction.CreatedByUserID {
+			if err := lib.DB.Model(&models.Debt{}).Where("group_id = ? AND creditor_id = ? AND debtor_id = ?", groupId, transaction.CreatedByUserID, transaction.Members[i].UserID).UpdateColumn("amount", gorm.Expr("amount - ?", transaction.Amount/float64(len(transaction.Members)))).Error; err != nil {
+				if err == gorm.ErrRecordNotFound {
+					c.JSON(http.StatusNotFound, gin.H{"error": "Debt with member not found"})
+				} else {
+					c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update debt"})
+				}
+
+				tx.Rollback()
+				return
+			}
+		}
+
+		if err := lib.DB.Model(&models.Debt{}).Where("group_id = ? AND creditor_id = ? AND debtor_id = ?", groupId, transaction.Members[i].UserID, transaction.CreatedByUserID).UpdateColumn("amount", gorm.Expr("amount + ?", transaction.Amount/float64(len(transaction.Members)))).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				c.JSON(http.StatusNotFound, gin.H{"error": "Debt with member itself not found"})
+			} else {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update debt"})
+			}
+
+			tx.Rollback()
+			return
+		}
+	}
+
+	// Commit transaction
+	if err := tx.Commit().Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to commit transaction"})
+		return
+	}
+
+	c.JSON(http.StatusOK, transaction)
 }
