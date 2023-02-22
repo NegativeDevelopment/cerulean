@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  app:
+    build: 
+      context: .
+    environment:
+      PORT: 3000
+      DB_STRING: "host=db user=postgres password=postgres dbname=postgres port=5432"
+      JWT_LIFESPAN_HOURS: 5
+      JWT_SECRET: 1235
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres

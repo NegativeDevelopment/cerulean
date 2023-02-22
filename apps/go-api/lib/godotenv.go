@@ -9,6 +9,6 @@ import (
 func InitializeDotEnv() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatalf("Failed to load .env file")
+		log.Println("No .env file found")
 	}
 }

@@ -1,0 +1,16 @@
+## Build
+FROM golang:alpine AS builder
+
+WORKDIR /src/cerulean-api
+COPY . .
+
+RUN go build -o /go/bin/cerulean-api
+
+## Deploy
+FROM scratch
+
+COPY --from=builder /go/bin/cerulean-api /go/bin/cerulean-api
+
+EXPOSE 3000
+
+ENTRYPOINT ["/go/bin/cerulean-api"]
