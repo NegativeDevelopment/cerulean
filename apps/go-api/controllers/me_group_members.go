@@ -16,6 +16,7 @@ func MyGroupMembersRoutes(parentGroup *gin.RouterGroup) {
 	group := parentGroup.Group("me/groups/:groupid/members", middlewares.JwtAuthMiddleware(), middlewares.CheckUUIDMiddleware("groupid"))
 	{
 		group.POST("", middlewares.GroupOwnerMiddleware(), addGroupMember)
+		group.DELETE("/:userid", middlewares.GroupOwnerMiddleware(), middlewares.CheckUUIDMiddleware("userid"), removeGroupMember)
 	}
 }
 
@@ -115,5 +116,41 @@ func addGroupMember(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, groupMember)
+	c.JSON(http.StatusOK, groupMember)
+}
+
+func removeGroupMember(c *gin.Context) {
+	var groupId = c.MustGet("groupid").(uuid.UUID)
+	var userId = c.MustGet("userid").(uuid.UUID)
+
+	// Get group member
+	var groupMember models.Member
+	if err := lib.DB.Where("group_id = ? AND user_id = ?", groupId, userId).First(&groupMember).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Group member not found"})
+		return
+	}
+
+	// Start transaction to remove group member and delete debts
+	tx := lib.DB.Begin()
+	// Delete group member
+	if err := tx.Where("group_id = ? AND user_id = ?", groupId, userId).Delete(&models.Member{}).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to remove group member"})
+		tx.Rollback()
+		return
+	}
+
+	// Delete debts
+	if err := tx.Where("group_id = ? AND (creditor_id = ? OR debtor_id = ?)", groupId, userId, userId).Delete(&models.Debt{}).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to remove member debts"})
+		tx.Rollback()
+		return
+	}
+
+	// Commit transaction
+	if err := tx.Commit().Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to remove group member and debts"})
+		return
+	}
+
+	c.JSON(http.StatusOK, groupMember)
 }
