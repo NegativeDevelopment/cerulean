@@ -8,14 +8,14 @@ class AuthController with ChangeNotifier {
   final AuthService _authService;
 
   late String token;
-  bool _isLoggedIn = false;
+  bool isAuthenticated = false;
 
   void login(String username, String password) async {
     var token = await _authService.login(username, password);
     if (token.isEmpty) {
-      _isLoggedIn = false;
+      isAuthenticated = false;
     } else {
-      _isLoggedIn = true;
+      isAuthenticated = true;
     }
 
     this.token = token;

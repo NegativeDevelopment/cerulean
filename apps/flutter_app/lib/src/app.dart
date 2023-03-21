@@ -71,6 +71,12 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute<void>(
               settings: routeSettings,
               builder: (BuildContext context) {
+                if (!authController.isAuthenticated) {
+                  return AuthView(
+                    controller: authController,
+                  );
+                }
+
                 switch (routeSettings.name) {
                   case SettingsView.routeName:
                     return SettingsView(controller: settingsController);
