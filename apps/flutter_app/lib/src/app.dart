@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/src/group/group_list_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -87,8 +88,10 @@ class MyApp extends StatelessWidget {
                       controller: authController,
                     );
                   case SampleItemListView.routeName:
-                  default:
                     return const SampleItemListView();
+                  case GroupListView.routeName:
+                  default:
+                    return const GroupListView();
                 }
               },
             );
