@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'src/app.dart';
+import 'src/auth/auth_controller.dart';
+import 'src/auth/auth_service.dart';
 import 'src/settings/settings_controller.dart';
 import 'src/settings/settings_service.dart';
 
@@ -13,8 +15,12 @@ void main() async {
   // This prevents a sudden theme change when the app is first displayed.
   await settingsController.loadSettings();
 
+  // Set up the AuthController, which will glue user authentication to multiple
+  final authController = AuthController(AuthService());
+
   // Run the app and pass in the SettingsController. The app listens to the
   // SettingsController for changes, then passes it further down to the
   // SettingsView.
-  runApp(MyApp(settingsController: settingsController));
+  runApp(MyApp(
+      settingsController: settingsController, authController: authController));
 }
