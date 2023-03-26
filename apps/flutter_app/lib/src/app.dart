@@ -91,7 +91,7 @@ class MyApp extends StatelessWidget {
                     return const SampleItemListView();
                   case GroupListView.routeName:
                   default:
-                    return const GroupListView();
+                    return GroupListView(authController: authController);
                 }
               },
             );

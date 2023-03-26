@@ -1,16 +1,80 @@
+import 'dart:convert';
+import 'package:flutter_app/src/group/group_item.dart';
+import 'package:http/http.dart' as http;
+
+import '../constants.dart';
+
 class GroupService {
-  final String _baseUrl = 'https://api.groupme.com/v3';
   final String _token;
 
   GroupService(this._token);
 
-  // Future<List<Group>> getGroups() async {
-  //   final response = await http.get('$_baseUrl/groups?token=$_token');
-  //   if (response.statusCode == 200) {
-  //     final groups = json.decode(response.body)['response'];
-  //     return groups.map<Group>((group) => Group.fromJson(group)).toList();
-  //   } else {
-  //     throw Exception('Failed to load groups');
-  //   }
-  // }
+  Map<String, String> _getFetchHeaders() {
+    return <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': "Bearer $_token"
+    };
+  }
+
+  Future<List<GroupItem>> getGroups() async {
+    var response = await http.get(Uri.parse('$appApiBaseUrl/groups'),
+        headers: _getFetchHeaders());
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to load groups');
+    }
+  }
+
+  Future<List<GroupItem>> getMyGroups() async {
+    var response = await http.get(Uri.parse('$appApiBaseUrl/me/groups'),
+        headers: _getFetchHeaders());
+
+    if (response.statusCode == 200) {
+      Iterable l = jsonDecode(response.body);
+      List<GroupItem> items =
+          List<GroupItem>.from(l.map((model) => GroupItem.fromJson(model)));
+
+      return items;
+    } else {
+      throw Exception('Failed to load my groups');
+    }
+  }
+
+  Future<dynamic> getGroupDebt(String groupId) async {
+    var response = await http.get(
+        Uri.parse('$appApiBaseUrl/me/groups/$groupId/debt'),
+        headers: _getFetchHeaders());
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to load group debt');
+    }
+  }
+
+  Future<List<void>> getGroupMembers(String groupId) async {
+    var response = await http.get(
+        Uri.parse('$appApiBaseUrl/me/groups/$groupId/members'),
+        headers: _getFetchHeaders());
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to load group members');
+    }
+  }
+
+  Future<List<void>> getGroupTransactions(String groupId) async {
+    var response = await http.get(
+        Uri.parse('$appApiBaseUrl/me/groups/$groupId/transactions'),
+        headers: _getFetchHeaders());
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to load group members');
+    }
+  }
 }
