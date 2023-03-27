@@ -3,6 +3,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_app/src/auth/auth_controller.dart';
 import 'package:flutter_app/src/group/group_controller.dart';
+import 'package:flutter_app/src/group/group_item_view.dart';
 
 class GroupListView extends StatelessWidget {
   GroupListView({super.key, required this.authController})
@@ -34,6 +35,13 @@ class GroupListView extends StatelessWidget {
               return ListTile(
                 title: Text(item.name),
                 subtitle: Text(item.id),
+                onTap: () => Navigator.restorablePushNamed(
+                  context,
+                  GroupItemView.routeName,
+                  arguments: {
+                    'groupId': item.id,
+                  },
+                ),
               );
             },
           );
