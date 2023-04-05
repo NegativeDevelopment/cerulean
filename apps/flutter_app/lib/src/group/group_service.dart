@@ -1,5 +1,8 @@
 import 'dart:convert';
+import 'package:flutter_app/src/group/group_debt_item.dart';
 import 'package:flutter_app/src/group/group_item.dart';
+import 'package:flutter_app/src/group/group_transaction_item.dart';
+import 'package:flutter_app/src/group/group_user_item.dart';
 import 'package:http/http.dart' as http;
 
 import '../constants.dart';
@@ -42,37 +45,47 @@ class GroupService {
     }
   }
 
-  Future<dynamic> getGroupDebt(String groupId) async {
+  Future<List<GroupDebtItem>> getGroupDebt(String groupId) async {
     var response = await http.get(
-        Uri.parse('$appApiBaseUrl/me/groups/$groupId/debt'),
+        Uri.parse('$appApiBaseUrl/me/groups/$groupId/debts'),
         headers: _getFetchHeaders());
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      Iterable l = jsonDecode(response.body);
+      List<GroupDebtItem> items = List<GroupDebtItem>.from(
+          l.map((model) => GroupDebtItem.fromJson(model)));
+      return items;
     } else {
       throw Exception('Failed to load group debt');
     }
   }
 
-  Future<List<void>> getGroupMembers(String groupId) async {
+  Future<List<GroupUserItem>> getGroupMembers(String groupId) async {
     var response = await http.get(
         Uri.parse('$appApiBaseUrl/me/groups/$groupId/members'),
         headers: _getFetchHeaders());
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      Iterable l = jsonDecode(response.body);
+      List<GroupUserItem> items = List<GroupUserItem>.from(
+          l.map((model) => GroupUserItem.fromJson(model)));
+      return items;
     } else {
       throw Exception('Failed to load group members');
     }
   }
 
-  Future<List<void>> getGroupTransactions(String groupId) async {
+  Future<List<GroupTransactionItem>> getGroupTransactions(
+      String groupId) async {
     var response = await http.get(
         Uri.parse('$appApiBaseUrl/me/groups/$groupId/transactions'),
         headers: _getFetchHeaders());
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      Iterable l = jsonDecode(response.body);
+      List<GroupTransactionItem> items = List<GroupTransactionItem>.from(
+          l.map((model) => GroupTransactionItem.fromJson(model)));
+      return items;
     } else {
       throw Exception('Failed to load group members');
     }

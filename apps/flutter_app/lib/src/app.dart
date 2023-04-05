@@ -92,6 +92,7 @@ class MyApp extends StatelessWidget {
                     return const SampleItemListView();
                   case GroupItemView.routeName:
                     return GroupItemView(
+                      authController: authController,
                       groupId: (routeSettings.arguments as dynamic)['groupId'],
                     );
                   case GroupListView.routeName:
