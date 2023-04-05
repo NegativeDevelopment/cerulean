@@ -5,7 +5,7 @@ import "github.com/google/uuid"
 type Group struct {
 	Base
 	Name         string        `json:"name" gorm:"type:varchar(100);required"`
-	OwnerID      uuid.UUID     `json:"owner_id"`
+	OwnerID      uuid.UUID     `json:"ownerId"`
 	Members      []Member      `json:"members" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Transactions []Transaction `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Debts        []Debt        `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`

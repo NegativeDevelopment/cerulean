@@ -7,9 +7,9 @@ import (
 )
 
 type Member struct {
-	UserID    uuid.UUID  `json:"user_id" gorm:"primary_key;"`
+	UserID    uuid.UUID  `json:"userId" gorm:"primary_key;"`
 	User      User       `json:"-" gorm:"foreignkey:UserID;references:ID;"`
-	GroupID   uuid.UUID  `json:"group_id" gorm:"primary_key;"`
+	GroupID   uuid.UUID  `json:"groupId" gorm:"primary_key;"`
 	Group     Group      `json:"-" gorm:"foreignkey:GroupID;references:ID;"`
 	CreatedAt time.Time  `json:"-"`
 	UpdatedAt time.Time  `json:"-"`
