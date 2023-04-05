@@ -19,10 +19,14 @@ class GroupItem {
     return GroupItem(
       id: json['id'],
       name: json['name'],
-      ownerID: json['owner_id'],
+      ownerID: json['ownerId'],
       // members: json['members'],
       // transactions: json['transactions'],
       // debts: json['debts'],
     );
+  }
+
+  toJson() {
+    throw new UnimplementedError();
   }
 }
