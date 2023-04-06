@@ -15,7 +15,7 @@ import (
 func GroupsRoutes(parentGroup *gin.RouterGroup) {
 	group := parentGroup.Group("/groups")
 	{
-		group.POST("/", middlewares.JwtAuthMiddleware(), createGroup)
+		group.POST("", middlewares.JwtAuthMiddleware(), createGroup)
 	}
 }
 
